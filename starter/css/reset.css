@@ -1,0 +1,29 @@
+/* reset css style */
+
+/* CSS Reset */
+html,
+body,
+div,
+h1,
+h2,
+h3,
+p,
+form,
+article,
+aside,
+section {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+aside,
+section {
+    display: block;
+}
+
+body {
+    line-height: 1;
+}
