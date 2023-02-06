@@ -5,7 +5,7 @@ $(document).ready(function () {
         $('<button />', {
             type: "submit",
             class: "btn  btn-secondary mt-2 btn-block",
-            id: "search-button",
+            id: `search-button-${obj.location}`,
             'aria-label': "submit search",
             text: obj.location
         }).appendTo(historyElement);
@@ -40,7 +40,7 @@ $(document).ready(function () {
 
             }).appendTo(card_body);
         });
-        
+
         todayElement.appendTo(card)
 
     };
@@ -90,10 +90,23 @@ $(document).ready(function () {
             }).appendTo(body);
         });
 
+        forecastElement.appendTo(div)
+
     }
 
-    $(selector).submit(function (e) {
+    $('#search-form').submit(function (e) {
         e.preventDefault();
 
+        let v = $("#search-input").val()
+
+        console.log(v)
+      
+
     });
+
+    $("button[id='history-button'").click(function (e) { 
+        e.preventDefault();
+        console.log($(this).text().trim())
+        
+    })
 })
