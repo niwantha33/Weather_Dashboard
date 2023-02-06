@@ -1,14 +1,51 @@
 $(document).ready(function () {
 
-    function historyCities(param) {
+    function historyCities(obj, historyElement) {
+
+        $('<button />', {
+            type: "submit",
+            class: "btn  btn-secondary mt-2 btn-block",
+            id: "search-button",
+            'aria-label': "submit search",
+            text: obj.location
+        }).appendTo(historyElement);
+    };
+
+    /*
+
+
+    */
+
+    function todayWeatherDataToCard(obj, todayElement) {
+
+        let card = $("<div style='max-width: 10rem; max-height: auto;'/>", {
+            class: "card mb-3 w-100"
+        });
+
+        let card_body = $('<div/>', {
+            class: "card-body",
+        }).appendTo(card);
+
+        $('<h5/>', {
+            class: 'card-title',
+            html: `${obj.city} (${obj.date})<i class="fa ${obj.icon}"></i>`
+        }).appendTo(card_body);
+
+        arr = [`Temp: ${obj.temp} ℃`, `Wind: ${obj.wind} KPH`, `Humidity: ${obj.wind} %`]
+
+        arr.forEach(element => {
+            $("<p/>", {
+                class: "card text",
+                text: element
+
+            }).appendTo(card_body);
+        });
+        
+        todayElement.appendTo(card)
 
     };
 
-    function todayWeatherDataToCard(obj) {
 
-    };
-
-    
 
     /*
 
@@ -17,7 +54,7 @@ $(document).ready(function () {
 
     */
 
-    function forecastWeatherDataToCards(obj, htmlElement) {
+    function forecastWeatherDataToCards(obj, forecastElement) {
 
         let div = $("<div style='max-width: 10rem; max-height: auto;'/>", {
             class: "card text-white bg-dark mb-3"
@@ -54,4 +91,9 @@ $(document).ready(function () {
         });
 
     }
+
+    $(selector).submit(function (e) {
+        e.preventDefault();
+
+    });
 })
