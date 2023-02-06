@@ -1,5 +1,66 @@
 $(document).ready(function () {
 
+    let checkDataPersist = function () {
+
+        try {
+            if (localStorage.hasOwnProperty("history")) {
+
+                let rtv = localStorage.getItem("history"); // retrieve data from local store 
+
+                return JSON.parse(rtv);// convert from JSON to object 
+
+            }
+            return null;
+
+        } catch (e) {
+
+            throw e;
+        }
+
+    }
+
+
+    let saveToLocalStorage = function (newArray) {
+        // debugger;
+
+        try {
+            localStorage.setItem("history", JSON.stringify(newArray));
+
+        } catch (e) {
+            throw e;
+        }
+
+    }
+
+    function retrieveAndSaveToLocalStorage(obj) {
+
+        // debugger;
+        try {
+
+            let tmp = new Array(); // create tmp array to store data 
+
+            if (localStorage.hasOwnProperty("history")) { // check if key: schedule exist
+
+                let rtv = localStorage.getItem("history"); // retrieve data from local store         
+
+                let parse_rtv = JSON.parse(rtv); // convert from JSON to object 
+
+                parse_rtv.forEach(element => {
+                    tmp.push(element); // append to tmp array     
+                });
+
+            };
+            //  then push new object 
+            tmp.push(obj); // append to tmp array 
+
+            saveToLocalStorage(tmp); // save tmp object  
+
+        } catch (e) {
+            throw e;
+        }
+    }
+
+
     function historyCities(obj, historyElement) {
 
         $('<button />', {
