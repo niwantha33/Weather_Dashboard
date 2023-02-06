@@ -100,13 +100,41 @@ $(document).ready(function () {
         let v = $("#search-input").val()
 
         console.log(v)
-      
+
 
     });
-
-    $("button[id='history-button'").click(function (e) { 
+    r = [1, 2, 3, 4, 5, 6]
+    $("button[id='history-button'").click(function (e) {
         e.preventDefault();
         console.log($(this).text().trim())
-        
+        console.log($(r))
+        console.log(r)
+
     })
+
+    let url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent("london")}&appid=0e9d4141368e13110e68dda0d815ef90`
+    
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept-Language': 'en-uk'            
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response Error")
+            }
+        })
+        .then(data => {
+            handleResponse(data);
+        })
+        .catch(error => {
+            console.log("Error:", error);
+        })
+
+    function handleResponse(data) {
+        console.log("data:", data)
+    }
 })
