@@ -8,30 +8,50 @@ $(document).ready(function () {
 
     };
 
-    /*
-    <div class="card text-white bg-dark mb-3" style="max-width: 10rem;">
-        <div class="card-header">Header
-        
-        </div>
+    
 
-            <div class="card-body">
-              
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            </div>
-    </div>
+    /*
+
+    @param: obj-> weather data Object and htmlElement
+
 
     */
 
+    function forecastWeatherDataToCards(obj, htmlElement) {
 
-    function forecastWeatherDataToCards(obj) {
+        let div = $("<div style='max-width: 10rem; max-height: auto;'/>", {
+            class: "card text-white bg-dark mb-3"
+        });
 
-        $("<div style='max-width: 10rem;'/>", {
-            class: "card text-white bg-dark mb-3",
-           
-            text: `${time_[i]}`
+        let header = $('<div/>', {
+            class: "card-header mb-auto",
 
-        }).appendTo(row);
+        }).appendTo(div);
 
-    };
+        $('<h5/>', {
+            text: "date"
+        }).appendTo(header);
 
+        let body = $('<div/>', {
+            class: "card-body mb-auto",
+        }).appendTo(div);
+
+        $("<p style='font-size: 2.5rem;'/>", {
+            class: "card text",
+            html: `<i class="fa ${icon}"></i>`
+        }).appendTo(body);
+
+        let arr = new Array();
+
+        arr = [`Temp: ${obj.temp} ℃`, `Wind: ${obj.wind} KPH`, `Humidity: ${obj.wind} %`]
+
+        arr.forEach(element => {
+            $("<p/>", {
+                class: "card text",
+                text: element
+
+            }).appendTo(body);
+        });
+
+    }
 })
