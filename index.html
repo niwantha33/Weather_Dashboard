@@ -62,40 +62,21 @@
       </aside>
 
       <div class="col-lg-9 pb-3">
-        <section id="today" class="row mt-3 mr-3" role="region" aria-live="polite">
-          <div class="card mb-3 w-100">           
-            <div class="card-body">
-              <h5 class="card-title">London (19/02/2022)<img src="https://openweathermap.org/img/w/04n.png"></h5>
-              <p class="card-text">Temp 56 ℃ </p>
-              <p class="card-text">Wind 56 ℃ </p>
-              <p class="card-text">Humidity 56 ℃ </p>
-              
-            </div>
-          </div>
-        </section>
-        <section id="forecast" class="row mt-3 " role="region" aria-live="polite">
-       
-          <div class="card text-white bg-dark mb-3 mr-3" style="max-width: 10rem; max-height: auto;">
-            <div class="card-header mb-auto">
-              <h5>19/02/2022</h5>
-            </div>
-            <div class="card-body mb-auto">
-              <p class="card-text" style="font-size: 2.5rem;"><i class="fa fa-cloud"></i></p>
-              <p class="card-text">Temp 56 ℃ </p>
-              <p class="card-text">Wind 56 ℃ </p>
-              <p class="card-text">Humidity 56 ℃ </p>
-            </div>
-          </div>
-
-        </section>
+        <section id="today" class="row mt-3 mr-3" role="region" aria-live="polite"></section>
+        <section id="forecast" class="row mt-3 " role="region" aria-live="polite"></section>
       </div>
     </div>
   </div>
 
-  <!-- Moment.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+  <!-- luxon.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/3.2.1/luxon.min.js"
+  integrity="sha512-pyR2hpC7bLig9Ub4eUIOC/BAO4anpdt7jhpF4dfrPv+qIg+KWztdVjFPCRCsRaWVfUylUCvrrxqMFNrJBdQIjQ=="
+  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script> -->
   <!-- jQuery -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
   <script src="./starter/js/script.js"></script>
   <!-- <script src="./starter/js/test.js"></script> -->
 </body>

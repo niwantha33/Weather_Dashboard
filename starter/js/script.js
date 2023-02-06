@@ -80,7 +80,7 @@ $(document).ready(function () {
     */
 
     function todayWeatherDataToCard(obj, todayElement) {
-        console.log("today:",obj)
+        console.log("today:",obj, todayElement)
 
         let card = $("<div style='max-width: 10rem; max-height: auto;'/>", {
             class: "card mb-3 w-100"
@@ -96,16 +96,17 @@ $(document).ready(function () {
         }).appendTo(card_body);
 
         arr = [`Temp: ${obj.temp} ℃`, `Wind: ${obj.wind} KPH`, `Humidity: ${obj.wind} %`]
-
+        console.log(arr)
         arr.forEach(element => {
+            console.log(element)
             $("<p/>", {
                 class: "card text",
                 text: element
 
             }).appendTo(card_body);
         });
-
-        todayElement.appendTo(card)
+        // console.log(card)
+        todayElement.append(card)
 
     };
 
@@ -174,7 +175,7 @@ $(document).ready(function () {
     }
 
     function latLonCityHandler(data) {
-        console.log($(data)[0].lat);
+        console.log($(data)[0]);
 
         $.ajax({
             url: `https://api.openweathermap.org/data/2.5/weather?lat=${$(data)[0].lat}&lon=${$(data)[0].lon}&appid=${API_KEY}`,
@@ -193,16 +194,21 @@ $(document).ready(function () {
 
         let todayElement = $('#today')
 
+        console.log(todayElement.children().length )
+
         if (todayElement.children().length > 0) {
+            
 
             todayElement.empty();
         }
         
         obj = {
             icon:params.weather[0].icon, // weather icon 
-            temp:params.main.temp,
+            //0K − 273.15  kelvin to Cent & fixed to 2 decimals 
+            temp:((Number(params.main.temp) - 273.15)).toFixed(2),
             humidity:params.main.humidity,
             wind:params.wind.speed
+            
         }
 
         todayWeatherDataToCard(obj, todayElement)
@@ -220,7 +226,14 @@ $(document).ready(function () {
         console.log("objectHandle: ",data.list);
         let weatherList = data.list
         weatherList.forEach(element => {
-          console.log(weatherList.dt_txt)
+            obj = {
+                icon:element.weather[0].icon, // weather icon 
+                //0K − 273.15  kelvin to Cent & fixed to 2 decimals 
+                temp:((Number(element.main.temp) - 273.15)).toFixed(2),
+                humidity:element.main.humidity,
+                wind:element.wind.speed
+            }
+          console.log(obj)
           
         })
     }
