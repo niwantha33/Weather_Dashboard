@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    // openWeather API KEY
+    const API_KEY = "0e9d4141368e13110e68dda0d815ef90";
 
     let checkDataPersist = function () {
 
@@ -61,7 +63,7 @@ $(document).ready(function () {
     }
 
 
-    function historyCities(obj, historyElement) {
+    function historyCitiesButtons(obj, historyElement) {
 
         $('<button />', {
             type: "submit",
@@ -89,7 +91,7 @@ $(document).ready(function () {
 
         $('<h5/>', {
             class: 'card-title',
-            html: `${obj.city} (${obj.date})<i class="fa ${obj.icon}"></i>`
+            html: `${obj.city} (${obj.date})<img src="https://openweathermap.org/img/w/${obj.icon}.png">`
         }).appendTo(card_body);
 
         arr = [`Temp: ${obj.temp} ℃`, `Wind: ${obj.wind} KPH`, `Humidity: ${obj.wind} %`]
@@ -155,47 +157,80 @@ $(document).ready(function () {
 
     }
 
+    function errorHandler(error) {
+        console.error(error);
+    }
+
+    function openWeatherHandler(city) {
+        let cityEncode = encodeURIComponent(city) // encode the string 
+        $.ajax({
+            url: `http://api.openweathermap.org/geo/1.0/direct?q=${cityEncode}&appid=${API_KEY}`,
+            type: "GET",
+            dataType: "json",
+            success: latLonCityHandler, // pass city lat and lon data 
+            error: errorHandler
+        });
+    }
+
+    function latLonCityHandler(data) {
+        console.log($(data)[0].lat);
+
+        $.ajax({
+            url: `https://api.openweathermap.org/data/2.5/weather?lat=${$(data)[0].lat}&lon=${$(data)[0].lon}&appid=${API_KEY}`,
+            type: "GET",
+            dataType: "json",
+            success: forecastHandler,
+            error: errorHandler
+        });
+    }
+
+    
+
+    function forecastHandler(params) {
+        console.log(params)
+        // get the current weather 
+
+        // icon 
+        let icon = params.weather[0].icon
+        
+        todayWeatherDataToCard(obj, todayElement)
+        console.log(icon)
+
+        
+
+        
+        $.ajax({
+            url: `http://api.openweathermap.org/data/2.5/forecast?id=${params.id}&appid=${API_KEY}`,
+            type: "GET",
+            dataType: "json",
+            success: forecastWeatherDataHandler,
+            error:errorHandler
+        });         
+    }
+    
+    function forecastWeatherDataHandler(data) {
+        console.log("objectHandle: ",data.list);
+        let weatherList = data.list
+        weatherList.forEach(element => {
+          console.log(weatherList.dt_txt)
+          
+        })
+    }
+
+
+    // get the search city data and pass to openweather API 
     $('#search-form').submit(function (e) {
         e.preventDefault();
-
-        let v = $("#search-input").val()
-
-        console.log(v)
-
-
+        let city = $("#search-input").val().trim();
+        openWeatherHandler(city);
     });
-    r = [1, 2, 3, 4, 5, 6]
+
     $("button[id='history-button'").click(function (e) {
         e.preventDefault();
-        console.log($(this).text().trim())
-        console.log($(r))
-        console.log(r)
+        let historyCity = ($(this).text().trim())
+        openWeatherHandler(historyCity);
+
 
     })
 
-    let url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent("london")}&appid=0e9d4141368e13110e68dda0d815ef90`
-    
-    fetch(url, {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Accept-Language': 'en-uk'            
-        }
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Network response Error")
-            }
-        })
-        .then(data => {
-            handleResponse(data);
-        })
-        .catch(error => {
-            console.log("Error:", error);
-        })
-
-    function handleResponse(data) {
-        console.log("data:", data)
-    }
 })

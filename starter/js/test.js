@@ -8,7 +8,7 @@ $.ajax({
   url: `http://api.openweathermap.org/geo/1.0/direct?q=${city}&appid=${API_KEY}`,
   type: "GET",
   dataType: "json",
-  success:dataHandler,
+  success:cityWeatherHandler, // pass city lat and lon data 
   error: errorHandler
 });
 // current weather 
@@ -19,14 +19,15 @@ $.ajax({
 // icon - https://openweathermap.org/img/w/03n.png
 
 
-function dataHandler(data){      
+function cityWeatherHandler(data){      
         console.log($(data)[0].lat);
     
         $.ajax({
             url: `https://api.openweathermap.org/data/2.5/weather?lat=${$(data)[0].lat}&lon=${$(data)[0].lon}&appid=${API_KEY}`,
             type: "GET",
             dataType: "json",
-            success: objectHandler
+            success: forecastHandler,
+            error: errorHandler
         });
 }
 
@@ -34,18 +35,25 @@ function errorHandler(error) {
     console.error(error);
   }
 
-function objectHandler(params) {
+function forecastHandler(params) {
     console.log(params)
     $.ajax({
         url: `http://api.openweathermap.org/data/2.5/forecast?id=${params.id}&appid=${API_KEY}`,
         type: "GET",
         dataType: "json",
-        success: function(data) {
-          console.log("objectHandle: ",data);
-        },
-        error: function(error) {
-          console.error(error);
-        }
-      });
+        success: forecastWeatherDataHandler,
+        error:errorHandler
+    });     
     
 }
+
+function forecastWeatherDataHandler(data) {
+    console.log("objectHandle: ",data.list);
+    let weatherList = data.list
+    weatherList.forEach(element => {
+      console.log(weatherList.dt_txt)
+      
+    }
+
+// get the current time and check time range then display the most close time 
+// 00 -03 , 03 - 06
