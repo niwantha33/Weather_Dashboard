@@ -76,7 +76,7 @@ $(document).ready(function () {
         obj.forEach(element => {
             $('<button />', {
                 type: "submit",
-                class: "btn  btn-secondary mt-2 btn-block",
+                class: "btn  btn-secondary mt-2 btn-block text-center",
                 id: `history-button`,
                 'aria-label': "submit search",
                 text: element
@@ -114,7 +114,7 @@ $(document).ready(function () {
         arr.forEach(element => {
             console.log(element)
             $("<p/>", {
-                class: "card text",
+                class: "card text ",
                 text: element,
                 style: 'border:none;'
 
@@ -135,28 +135,37 @@ $(document).ready(function () {
     */
 
     function forecastWeatherDataToCards(obj, forecastElement) {
-
-        let div = $("<div style='max-width: 10rem; max-height: auto;'/>", {
-            class: "card text-white bg-dark mb-3"
-        });
+        console.log(obj,forecastElement[0] )
+        
+        let divElement = $("<div>")
+        divElement.addClass("card text-white bg-dark mb-3")
+        divElement.css('max-width' , '18rem');
+       
+        forecastElement.append(divElement)
 
         let header = $('<div/>', {
             class: "card-header mb-auto",
+            text:"card Header"
 
-        }).appendTo(div);
+        }).appendTo(divElement);
+ // console.log(div)
 
-        $('<h5/>', {
-            text: "date"
-        }).appendTo(header);
+        // forecastElement.append(divElement)
 
-        let body = $('<div/>', {
-            class: "card-body mb-auto",
-        }).appendTo(div);
+        // <div class="card-body">
 
-        $("<p style='font-size: 2.5rem;'/>", {
-            class: "card text",
-            html: `<i class="fa ${icon}"></i>`
-        }).appendTo(body);
+        let bodyElementCard = $('<div/>', {
+            class: "card-body",           
+
+        }).appendTo(divElement);
+
+
+
+        $("<h5/>", {
+            class: "card text ",
+            style:'font-size: 1.2rem;',
+            html: `<img src="https://openweathermap.org/img/w/${obj.icon}.png">`
+        }).appendTo(bodyElementCard);
 
         let arr = new Array();
 
@@ -164,13 +173,16 @@ $(document).ready(function () {
 
         arr.forEach(element => {
             $("<p/>", {
-                class: "card text",
+                class: "card-text pr-3",
+                // style: 'background-color:black;',
                 text: element
 
-            }).appendTo(body);
+            }).appendTo(bodyElementCard);
         });
 
-        forecastElement.appendTo(div)
+        // console.log(div)
+
+        // forecastElement.append(div)
 
     }
 
@@ -250,14 +262,32 @@ $(document).ready(function () {
     function forecastWeatherDataHandler(data) {
         // console.log("objectHandle: ", data.list);
         let weatherList = data.list
+        let forecastElement = $("#forecast")
         weatherList.forEach(element => {
-            obj = {
-                icon: element.weather[0].icon, // weather icon 
-                //0K − 273.15  kelvin to Cent & fixed to 2 decimals 
-                temp: ((Number(element.main.temp) - 273.15)).toFixed(2),
-                humidity: element.main.humidity,
-                wind: element.wind.speed
+            
+            let currentHour = Number(luxon.DateTime.now().toFormat('HH'))
+            // dt_txt "2023-02-07 12:00:00"
+            let selectForecastHour = Number(((element.dt_txt).split(' '))[1].split(":")[0])
+            console.log(selectForecastHour, currentHour)
+
+            if(currentHour>=9 && currentHour < 12){
+                if(selectForecastHour === 9){
+                    obj = {
+                        icon: element.weather[0].icon, // weather icon 
+                        //0K − 273.15  kelvin to Cent & fixed to 2 decimals 
+                        temp: ((Number(element.main.temp) - 273.15)).toFixed(2),
+                        humidity: element.main.humidity,
+                        wind: element.wind.speed
+                    }
+                    console.log(element, obj)
+                    forecastWeatherDataToCards(obj,forecastElement)
+
+
+                }
+
             }
+           
+           
             // console.log(obj)
 
         })
