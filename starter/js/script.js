@@ -48,7 +48,11 @@ $(document).ready(function () {
                 let parse_rtv = JSON.parse(rtv); // convert from JSON to object 
 
                 parse_rtv.forEach(element => {
-                    tmp.push(element); // append to tmp array     
+                    // console.log("localstorage:", obj, element)
+                    if (obj !== element) {
+                        tmp.push(element); // append to tmp array 
+                    }
+
                 });
 
             };
@@ -65,18 +69,21 @@ $(document).ready(function () {
 
     function historyCitiesButtons(obj, historyElement) {
 
-        console.log(obj, historyElement)
+        if (historyElement.children().length > 0) {
+            historyElement.empty();
+        }
+
         obj.forEach(element => {
             $('<button />', {
                 type: "submit",
                 class: "btn  btn-secondary mt-2 btn-block",
-                id: `search-button-${element}`,
+                id: `history-button`,
                 'aria-label': "submit search",
                 text: element
             }).appendTo(historyElement);
-            
+
         });
-        
+
     };
 
     /*
@@ -85,7 +92,7 @@ $(document).ready(function () {
     */
 
     function todayWeatherDataToCard(obj, todayElement) {
-        console.log("today:", obj, todayElement)
+        
 
         let card = $("<div style='border:2px solid black;'/>", {
 
@@ -173,7 +180,7 @@ $(document).ready(function () {
 
     function openWeatherHandler(city) {
         let cityEncode = encodeURIComponent(city.toLowerCase()) // encode the string 
-        console.log(cityEncode)
+        // console.log(cityEncode)
         $.ajax({
             url: `http://api.openweathermap.org/geo/1.0/direct?q=${cityEncode}&appid=${API_KEY}`,
             type: "GET",
@@ -184,12 +191,13 @@ $(document).ready(function () {
     }
 
     function latLonCityHandler(data, testStatus, statusData) {
-        console.log(testStatus)
+        // console.log(testStatus)
 
         if ($(data).length > 0 && statusData.status === 200 && testStatus === 'success') {
 
             // add the city to history 
             retrieveAndSaveToLocalStorage(data[0].name)
+            displayHistoryCities()
 
             $.ajax({
                 url: `https://api.openweathermap.org/data/2.5/weather?lat=${$(data)[0].lat}&lon=${$(data)[0].lon}&appid=${API_KEY}`,
@@ -209,9 +217,7 @@ $(document).ready(function () {
 
         // get the current weather 
 
-        let todayElement = $('#today')
-
-        console.log(todayElement.children().length)
+        let todayElement = $('#today')        
 
         if (todayElement.children().length > 0) {
 
@@ -242,7 +248,7 @@ $(document).ready(function () {
     }
 
     function forecastWeatherDataHandler(data) {
-        console.log("objectHandle: ", data.list);
+        // console.log("objectHandle: ", data.list);
         let weatherList = data.list
         weatherList.forEach(element => {
             obj = {
@@ -252,31 +258,40 @@ $(document).ready(function () {
                 humidity: element.main.humidity,
                 wind: element.wind.speed
             }
-            console.log(obj)
+            // console.log(obj)
 
         })
     }
 
-    let historyCity = checkDataPersist()
-    if (historyCity !== null) {
-        let historyDivElement = $("#history")
-        historyCitiesButtons(historyCity,historyDivElement)
+    function displayHistoryCities() {
+        let historyCity = checkDataPersist()
+        if (historyCity !== null) {
+            let historyDivElement = $("#history")
+            historyCitiesButtons(historyCity, historyDivElement)
+
+        }
 
     }
 
+
+    displayHistoryCities()
 
     // get the search city data and pass to openweather API 
     $('#search-form').submit(function (e) {
         e.preventDefault();
         let city = $("#search-input").val().trim();
         openWeatherHandler(city);
+        $("#search-input").val('');
+       
     });
 
-    $("button[id='history-button'").click(function (e) {
+    $("#history").on('click',"button[id='history-button']", function (e) {
+        
         e.preventDefault();
+        console.log(e)
         let historyCity = ($(this).text().trim())
+        console.log(historyCity)
         openWeatherHandler(historyCity);
-
 
     })
 
