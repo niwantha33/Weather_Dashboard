@@ -2,6 +2,8 @@
 
 link - [https://niwantha33.github.io/Weather_Dashboard](https://niwantha33.github.io/Weather_Dashboard/)
 
+![main](./starter/images/frn.png)
+
 ![](./starter/images/pic-1.png)
 
 The Weather Dashboard code is created using HTML, CSS and JQuery to retrieve and displays weather data for a particular city. The code uses the jQuery library and Bootstrap classes to create dynamic weather cards. The data for each city is stored in local storage so that the user can access it again in the future. 
