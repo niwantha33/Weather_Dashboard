@@ -1,6 +1,6 @@
 $(document).ready(function () {
     // openWeather API KEY
-    const API_KEY = "0e9d4141368e13110e68dda0d815ef90";
+
 
     let checkDataPersist = function () {
 
@@ -175,14 +175,14 @@ $(document).ready(function () {
     }
 
     function errorHandler(error) {
-        console.error(error);
+        console.log(error);
     }
 
     function openWeatherHandler(city) {
         let cityEncode = encodeURIComponent(city.toLowerCase()) // encode the string 
         // console.log(cityEncode)
         $.ajax({
-            url: `http://api.openweathermap.org/geo/1.0/direct?q=${cityEncode}&appid=${API_KEY}`,
+            url: `http://api.openweathermap.org/geo/1.0/direct?q=${cityEncode}&appid=${window.API_KEY}`,
             type: "GET",
             dataType: "json",
             success: latLonCityHandler, // pass city lat and lon data 
@@ -200,7 +200,7 @@ $(document).ready(function () {
             displayHistoryCities()
 
             $.ajax({
-                url: `https://api.openweathermap.org/data/2.5/weather?lat=${$(data)[0].lat}&lon=${$(data)[0].lon}&appid=${API_KEY}`,
+                url: `https://api.openweathermap.org/data/2.5/weather?lat=${$(data)[0].lat}&lon=${$(data)[0].lon}&appid=${window.API_KEY}`,
                 type: "GET",
                 dataType: "json",
                 success: forecastHandler,
@@ -239,7 +239,7 @@ $(document).ready(function () {
         todayWeatherDataToCard(obj, todayElement)
 
         $.ajax({
-            url: `http://api.openweathermap.org/data/2.5/forecast?id=${params.id}&appid=${API_KEY}`,
+            url: `http://api.openweathermap.org/data/2.5/forecast?id=${params.id}&appid=${window.API_KEY}`,
             type: "GET",
             dataType: "json",
             success: forecastWeatherDataHandler,
