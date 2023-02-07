@@ -65,13 +65,18 @@ $(document).ready(function () {
 
     function historyCitiesButtons(obj, historyElement) {
 
-        $('<button />', {
-            type: "submit",
-            class: "btn  btn-secondary mt-2 btn-block",
-            id: `search-button-${obj.location}`,
-            'aria-label': "submit search",
-            text: obj.location
-        }).appendTo(historyElement);
+        console.log(obj, historyElement)
+        obj.forEach(element => {
+            $('<button />', {
+                type: "submit",
+                class: "btn  btn-secondary mt-2 btn-block",
+                id: `search-button-${element}`,
+                'aria-label': "submit search",
+                text: element
+            }).appendTo(historyElement);
+            
+        });
+        
     };
 
     /*
@@ -80,10 +85,10 @@ $(document).ready(function () {
     */
 
     function todayWeatherDataToCard(obj, todayElement) {
-        console.log("today:",obj, todayElement)
+        console.log("today:", obj, todayElement)
 
         let card = $("<div style='border:2px solid black;'/>", {
-           
+
         });
 
         card.addClass('card mb-3 w-100');
@@ -98,13 +103,13 @@ $(document).ready(function () {
         }).appendTo(card_body);
 
         arr = [`Temp: ${obj.temp} ℃`, `Wind: ${obj.wind} KPH`, `Humidity: ${obj.wind} %`]
-       
+
         arr.forEach(element => {
             console.log(element)
             $("<p/>", {
                 class: "card text",
                 text: element,
-                style:'border:none;'
+                style: 'border:none;'
 
             }).appendTo(card_body);
         });
@@ -180,8 +185,11 @@ $(document).ready(function () {
 
     function latLonCityHandler(data, testStatus, statusData) {
         console.log(testStatus)
-        
-        if($(data).length > 0 && statusData.status === 200 && testStatus === 'success'){
+
+        if ($(data).length > 0 && statusData.status === 200 && testStatus === 'success') {
+
+            // add the city to history 
+            retrieveAndSaveToLocalStorage(data[0].name)
 
             $.ajax({
                 url: `https://api.openweathermap.org/data/2.5/weather?lat=${$(data)[0].lat}&lon=${$(data)[0].lon}&appid=${API_KEY}`,
@@ -190,36 +198,36 @@ $(document).ready(function () {
                 success: forecastHandler,
                 error: errorHandler
             });
-            
+
         }
-        
+
     }
 
-    
+
 
     function forecastHandler(params) {
-        console.log(params)
+
         // get the current weather 
 
         let todayElement = $('#today')
 
-        console.log(todayElement.children().length )
+        console.log(todayElement.children().length)
 
         if (todayElement.children().length > 0) {
-            
+
 
             todayElement.empty();
         }
-        
+
         obj = {
-            icon:params.weather[0].icon, // weather icon 
+            icon: params.weather[0].icon, // weather icon 
             //0K − 273.15  kelvin to Cent & fixed to 2 decimals 
-            temp:((Number(params.main.temp) - 273.15)).toFixed(2),
-            humidity:params.main.humidity,
-            wind:params.wind.speed,
+            temp: ((Number(params.main.temp) - 273.15)).toFixed(2),
+            humidity: params.main.humidity,
+            wind: params.wind.speed,
             date: luxon.DateTime.now().toFormat('dd-MMMM-yyyy'),
-            city:params.name
-            
+            city: params.name
+
         }
 
         todayWeatherDataToCard(obj, todayElement)
@@ -229,24 +237,31 @@ $(document).ready(function () {
             type: "GET",
             dataType: "json",
             success: forecastWeatherDataHandler,
-            error:errorHandler
-        });         
+            error: errorHandler
+        });
     }
-    
+
     function forecastWeatherDataHandler(data) {
-        console.log("objectHandle: ",data.list);
+        console.log("objectHandle: ", data.list);
         let weatherList = data.list
         weatherList.forEach(element => {
             obj = {
-                icon:element.weather[0].icon, // weather icon 
+                icon: element.weather[0].icon, // weather icon 
                 //0K − 273.15  kelvin to Cent & fixed to 2 decimals 
-                temp:((Number(element.main.temp) - 273.15)).toFixed(2),
-                humidity:element.main.humidity,
-                wind:element.wind.speed
+                temp: ((Number(element.main.temp) - 273.15)).toFixed(2),
+                humidity: element.main.humidity,
+                wind: element.wind.speed
             }
-          console.log(obj)
-          
+            console.log(obj)
+
         })
+    }
+
+    let historyCity = checkDataPersist()
+    if (historyCity !== null) {
+        let historyDivElement = $("#history")
+        historyCitiesButtons(historyCity,historyDivElement)
+
     }
 
 
