@@ -1,7 +1,8 @@
+//  in order to display particular city's current and forecast weather data  
 $(document).ready(function () {
-    // openWeather API KEY
+    
 
-
+    //  find and return user inputs 
     let checkDataPersist = function () {
 
         try {
@@ -33,7 +34,7 @@ $(document).ready(function () {
         }
 
     }
-
+    // retrieved data from localStorage and save to history 
     function retrieveAndSaveToLocalStorage(obj) {
 
         // debugger;
@@ -48,7 +49,7 @@ $(document).ready(function () {
                 let parse_rtv = JSON.parse(rtv); // convert from JSON to object 
 
                 parse_rtv.forEach(element => {
-                    // console.log("localstorage:", obj, element)
+                    // only new city will store 
                     if (obj !== element) {
                         tmp.push(element); // append to tmp array 
                     }
@@ -66,7 +67,7 @@ $(document).ready(function () {
         }
     }
 
-
+    // in order to create history button using localStorage 
     function historyCitiesButtons(obj, historyElement) {
 
         if (historyElement.children().length > 0) {
@@ -87,7 +88,8 @@ $(document).ready(function () {
     };
 
     /*
-    @brief:     The function takes two arguments: obj and todayElement. In order to create weather
+    @brief:     In order to display weather data as a dynamic page.
+                The function takes two arguments: obj and todayElement. In order to create weather
                 card using the jQuery library and Bootstrap. It generates a div element with a border, which is then given a class of 'card mb-3 w-100'. 
                 
                 Then, another div element with  class of 'card-body'. 
@@ -118,13 +120,14 @@ $(document).ready(function () {
 
         $('<h5/>', {
             class: 'card-title',
+            // obj.icon extract from openweather 
             html: `${obj.city} (${obj.date})<img src="https://openweathermap.org/img/w/${obj.icon}.png">`
         }).appendTo(card_body);
 
         arr = [`Temp: ${obj.temp} ℃`, `Wind: ${obj.wind} KPH`, `Humidity: ${obj.wind} %`]
 
         arr.forEach(element => {
-            
+
             $("<p/>", {
                 class: "card-text ",
                 text: element,
@@ -132,7 +135,7 @@ $(document).ready(function () {
 
             }).appendTo(card_body);
         });
-        
+
         todayElement.append(card) // card element append to the #today id
 
     };
@@ -140,38 +143,43 @@ $(document).ready(function () {
 
 
     /*
+    @brief:     In order to display 5 days weather forecast. 
+                The function takes two arguments: obj and forecastElement. 
+                
+                The function creates a weather card using the jQuery library and Bootstrap classes.
+                
+                It generates a div element with class of 'card text-white bg-dark pb-3'.
+                
+                The div element is then appended to the forecastElement. Next, it creates another div element inside the first div, which has a class of 'card-header mb-auto' and displays the date. 
+                
+                Then, it creates another div element with a class of 'card-body' and appends it to the first div. Then, it generates a p element with a class of 'card text' and displays the weather icon. 
+                
+                After that, arr  property (temperature, wind, and humidity) will loop and append to  p element to display in a card. 
 
-    @param: obj-> weather data Object and htmlElement
+    @param: {obj-> weather data Object and htmlElement}
 
+    @return: N/A
 
     */
 
     function forecastWeatherDataToCards(obj, forecastElement) {
-        // console.log(obj, forecastElement[0])
-
+     
         let divElement = $("<div>")
-        divElement.addClass("card text-white bg-dark mb-3")
-        divElement.css('max-width', '18rem');
+        divElement.addClass("card text-white bg-dark pb-3")
+        divElement.css('max-width', 'auto');
 
         forecastElement.append(divElement)
 
-        let header = $('<div/>', {
+        $('<div/>', {
             class: "card-header mb-auto",
             text: obj.date
 
         }).appendTo(divElement);
-        // console.log(div)
-
-        // forecastElement.append(divElement)
-
-        // <div class="card-body">
 
         let bodyElementCard = $('<div/>', {
             class: "card-body",
 
         }).appendTo(divElement);
-
-
 
         $("<p/>", {
             class: "card text ",
@@ -186,25 +194,36 @@ $(document).ready(function () {
         arr.forEach(element => {
             $("<p/>", {
                 class: "card-text pr-3",
-                // style: 'background-color:black;',
                 text: element
-
             }).appendTo(bodyElementCard);
         });
 
-        // console.log(div)
-
-        // forecastElement.append(div)
-
     }
 
+
+    // error handler function for api, if any error,
     function errorHandler(error) {
         throw error;
     }
 
+    /*
+
+    @brief:     This function will call openweather API in order to find respective lat and lon of the user input.
+    
+                Takes a city name as its argument. Then, $.ajax() method to make a GET request to the OpenWeatherMap API with the passed city name. 
+                
+                The city name is first encoded using the encodeURIComponent() function to make sure user input as per the URL format.
+                
+                The $.ajax() success callback is latLonCityHandler which takes the city latitude and longitude data. 
+                
+                The error callback is errorHandler. If the API call is successful, the latLonCityHandler function is called with the city latitude and longitude data,
+                to pass next function. 
+
+    */
+
     function openWeatherHandler(city) {
         let cityEncode = encodeURIComponent(city.toLowerCase()) // encode the string 
-        // console.log(cityEncode)
+
         $.ajax({
             url: `http://api.openweathermap.org/geo/1.0/direct?q=${cityEncode}&appid=${window.API_KEY}`,
             type: "GET",
@@ -214,12 +233,13 @@ $(document).ready(function () {
         });
     }
 
+    // to get weather data using at and lon
     function latLonCityHandler(data, testStatus, statusData) {
-        // console.log(testStatus)
+
 
         if ($(data).length > 0 && statusData.status === 200 && testStatus === 'success') {
 
-            // add the city to history 
+            // add the city to history - localStorage 
             retrieveAndSaveToLocalStorage(data[0].name)
             displayHistoryCities()
 
@@ -236,17 +256,15 @@ $(document).ready(function () {
     }
 
 
-
+    // success of lat & lon 
     function forecastHandler(params) {
 
         // get the current weather 
-
-        let todayElement = $('#today')
+        let todayElement = $('#today') // display weather data 
 
         if (todayElement.children().length > 0) {
 
-
-            todayElement.empty();
+            todayElement.empty(); // remove previous elements
         }
 
         obj = {
@@ -257,11 +275,10 @@ $(document).ready(function () {
             wind: params.wind.speed,
             date: luxon.DateTime.now().toFormat('dd-MMMM-yyyy'),
             city: params.name
-
         }
 
-        todayWeatherDataToCard(obj, todayElement)
-
+        todayWeatherDataToCard(obj, todayElement) // display current weather data 
+        // get 5 days weather data 
         $.ajax({
             url: `http://api.openweathermap.org/data/2.5/forecast?id=${params.id}&appid=${window.API_KEY}`,
             type: "GET",
@@ -283,9 +300,11 @@ $(document).ready(function () {
             let filterForecastHour = -1
 
             let currentHour = Number(luxon.DateTime.now().toFormat('HH'))
-            // dt_txt "2023-02-07 12:00:00"
+            
             let selectForecastHour = Number(((element.dt_txt).split(' '))[1].split(":")[0])
-            // console.log(selectForecastHour, currentHour)
+            // openweather API provides data with 3 hours gap, in order to select most suitable 
+            // hour to display in each card. 
+            // example: if I entered a city, all the forecast will show according to the current time etc..
             switch (selectForecastHour) {
 
                 case 0:
@@ -343,24 +362,22 @@ $(document).ready(function () {
                     wind: element.wind.speed,
                     date: ((element.dt_txt).split(' '))[0]
                 }
-                // console.log(element, obj)
+                
                 forecastWeatherDataToCards(obj, forecastElement)
-
-
-
 
             }
 
 
-            // console.log(obj)
+        
 
         })
     }
-
+    // get localStorage data and pass to the function to creates history button 
     function displayHistoryCities() {
-        let historyCity = checkDataPersist()
+        let historyCity = checkDataPersist() // get old data from localStorage 
         if (historyCity !== null) {
             let historyDivElement = $("#history")
+            // creates buttons
             historyCitiesButtons(historyCity, historyDivElement)
 
         }
@@ -368,7 +385,7 @@ $(document).ready(function () {
     }
 
 
-    displayHistoryCities()
+    displayHistoryCities() // at initial stage display history buttons. 
 
     // get the search city data and pass to openweather API 
     $('#search-form').submit(function (e) {
@@ -384,9 +401,9 @@ $(document).ready(function () {
     $("#history").on('click', "button[id='history-button']", function (e) {
 
         e.preventDefault();
-        // console.log(e)
-        let historyCity = ($(this).text().trim())
-        // console.log(historyCity)
+       
+        let historyCity = ($(this).text().trim()) // get the clicked button city name. 
+        
         openWeatherHandler(historyCity);
 
     })
