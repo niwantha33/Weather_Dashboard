@@ -211,7 +211,8 @@ $(document).ready(function () {
             temp:((Number(params.main.temp) - 273.15)).toFixed(2),
             humidity:params.main.humidity,
             wind:params.wind.speed,
-            date: luxon.DateTime.now().toFormat('dd-MMMM-yyyy')
+            date: luxon.DateTime.now().toFormat('dd-MMMM-yyyy'),
+            city:params.name
             
         }
 
