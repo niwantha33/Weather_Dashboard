@@ -87,6 +87,18 @@ $(document).ready(function () {
     };
 
     /*
+    @brief:     The function takes two arguments: obj and todayElement. In order to create weather
+                card using the jQuery library and Bootstrap. It generates a div element with a border, which is then given a class of 'card mb-3 w-100'. 
+                
+                Then, another div element with  class of 'card-body'. 
+                Then h5 element with a class of 'card-title' and displays the city name, date, and weather icon. 
+                
+                After that, weather data append to arr, property (temperature, wind, and humidity). 
+                
+                Finally, it loops through the array and generates a p element for each element in the array.
+
+    @params:    obj- Weather parameters and todayElement - the html element 
+    @return:    N/A
 
 
     */
@@ -112,7 +124,7 @@ $(document).ready(function () {
         arr = [`Temp: ${obj.temp} ℃`, `Wind: ${obj.wind} KPH`, `Humidity: ${obj.wind} %`]
 
         arr.forEach(element => {
-            // console.log(element)
+            
             $("<p/>", {
                 class: "card-text ",
                 text: element,
@@ -120,8 +132,8 @@ $(document).ready(function () {
 
             }).appendTo(card_body);
         });
-        // console.log(card)
-        todayElement.append(card)
+        
+        todayElement.append(card) // card element append to the #today id
 
     };
 
@@ -363,7 +375,7 @@ $(document).ready(function () {
         e.preventDefault();
         let city = $("#search-input").val().trim();
 
-       
+
         openWeatherHandler(city);
         $("#search-input").val('');
 
