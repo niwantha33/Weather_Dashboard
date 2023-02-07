@@ -225,7 +225,7 @@ $(document).ready(function () {
         let cityEncode = encodeURIComponent(city.toLowerCase()) // encode the string 
 
         $.ajax({
-            url: `http://api.openweathermap.org/geo/1.0/direct?q=${cityEncode}&appid=${window.API_KEY}`,
+            url: `https://api.openweathermap.org/geo/1.0/direct?q=${cityEncode}&appid=${window.API_KEY}`,
             type: "GET",
             dataType: "json",
             success: latLonCityHandler, // pass city lat and lon data 
@@ -280,7 +280,7 @@ $(document).ready(function () {
         todayWeatherDataToCard(obj, todayElement) // display current weather data 
         // get 5 days weather data 
         $.ajax({
-            url: `http://api.openweathermap.org/data/2.5/forecast?id=${params.id}&appid=${window.API_KEY}`,
+            url: `https://api.openweathermap.org/data/2.5/forecast?id=${params.id}&appid=${window.API_KEY}`,
             type: "GET",
             dataType: "json",
             success: forecastWeatherDataHandler,
