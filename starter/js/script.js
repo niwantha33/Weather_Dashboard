@@ -92,7 +92,7 @@ $(document).ready(function () {
     */
 
     function todayWeatherDataToCard(obj, todayElement) {
-        
+
 
         let card = $("<div style='border:2px solid black;'/>", {
 
@@ -112,9 +112,9 @@ $(document).ready(function () {
         arr = [`Temp: ${obj.temp} ℃`, `Wind: ${obj.wind} KPH`, `Humidity: ${obj.wind} %`]
 
         arr.forEach(element => {
-            console.log(element)
+            // console.log(element)
             $("<p/>", {
-                class: "card text ",
+                class: "card-text ",
                 text: element,
                 style: 'border:none;'
 
@@ -135,35 +135,35 @@ $(document).ready(function () {
     */
 
     function forecastWeatherDataToCards(obj, forecastElement) {
-        console.log(obj,forecastElement[0] )
-        
+        // console.log(obj, forecastElement[0])
+
         let divElement = $("<div>")
         divElement.addClass("card text-white bg-dark mb-3")
-        divElement.css('max-width' , '18rem');
-       
+        divElement.css('max-width', '18rem');
+
         forecastElement.append(divElement)
 
         let header = $('<div/>', {
             class: "card-header mb-auto",
-            text:"card Header"
+            text: obj.date
 
         }).appendTo(divElement);
- // console.log(div)
+        // console.log(div)
 
         // forecastElement.append(divElement)
 
         // <div class="card-body">
 
         let bodyElementCard = $('<div/>', {
-            class: "card-body",           
+            class: "card-body",
 
         }).appendTo(divElement);
 
 
 
-        $("<h5/>", {
+        $("<p/>", {
             class: "card text ",
-            style:'font-size: 1.2rem;',
+            style: 'font-size: 1.2rem;',
             html: `<img src="https://openweathermap.org/img/w/${obj.icon}.png">`
         }).appendTo(bodyElementCard);
 
@@ -187,7 +187,7 @@ $(document).ready(function () {
     }
 
     function errorHandler(error) {
-        console.log(error);
+        throw error;
     }
 
     function openWeatherHandler(city) {
@@ -229,7 +229,7 @@ $(document).ready(function () {
 
         // get the current weather 
 
-        let todayElement = $('#today')        
+        let todayElement = $('#today')
 
         if (todayElement.children().length > 0) {
 
@@ -263,31 +263,83 @@ $(document).ready(function () {
         // console.log("objectHandle: ", data.list);
         let weatherList = data.list
         let forecastElement = $("#forecast")
+        if (forecastElement.children().length > 0) {
+            forecastElement.empty();
+        }
         weatherList.forEach(element => {
-            
+
+            let filterForecastHour = -1
+
             let currentHour = Number(luxon.DateTime.now().toFormat('HH'))
             // dt_txt "2023-02-07 12:00:00"
             let selectForecastHour = Number(((element.dt_txt).split(' '))[1].split(":")[0])
-            console.log(selectForecastHour, currentHour)
+            // console.log(selectForecastHour, currentHour)
+            switch (selectForecastHour) {
 
-            if(currentHour>=9 && currentHour < 12){
-                if(selectForecastHour === 9){
-                    obj = {
-                        icon: element.weather[0].icon, // weather icon 
-                        //0K − 273.15  kelvin to Cent & fixed to 2 decimals 
-                        temp: ((Number(element.main.temp) - 273.15)).toFixed(2),
-                        humidity: element.main.humidity,
-                        wind: element.wind.speed
+                case 0:
+                    if (currentHour >= 0 && currentHour < 3) {
+                        filterForecastHour = 0
                     }
-                    console.log(element, obj)
-                    forecastWeatherDataToCards(obj,forecastElement)
-
-
-                }
+                    break;
+                case 3:
+                    if (currentHour >= 3 && currentHour < 6) {
+                        filterForecastHour = 3
+                    }
+                    break;
+                case 6:
+                    if (currentHour >= 6 && currentHour < 9) {
+                        filterForecastHour = 6
+                    }
+                    break;
+                case 9:
+                    if (currentHour >= 9 && currentHour < 12) {
+                        filterForecastHour = 9
+                    }
+                    break;
+                case 12:
+                    if (currentHour >= 12 && currentHour < 15) {
+                        filterForecastHour = 12
+                    }
+                    break;
+                case 15:
+                    if (currentHour >= 15 && currentHour < 18) {
+                        filterForecastHour = 15
+                    }
+                    break;
+                case 18:
+                    if (currentHour >= 18 && currentHour < 21) {
+                        filterForecastHour = 18
+                    }
+                    break;
+                case 21:
+                    if (currentHour >= 21 && currentHour < 0) {
+                        filterForecastHour = 21
+                    }
+                    break;
+                default:
+                    filterForecastHour = 0
+                    break;
 
             }
-           
-           
+
+            if (selectForecastHour === filterForecastHour) {
+                obj = {
+                    icon: element.weather[0].icon, // weather icon 
+                    //0K − 273.15  kelvin to Cent & fixed to 2 decimals 
+                    temp: ((Number(element.main.temp) - 273.15)).toFixed(2),
+                    humidity: element.main.humidity,
+                    wind: element.wind.speed,
+                    date: ((element.dt_txt).split(' '))[0]
+                }
+                // console.log(element, obj)
+                forecastWeatherDataToCards(obj, forecastElement)
+
+
+
+
+            }
+
+
             // console.log(obj)
 
         })
@@ -310,17 +362,19 @@ $(document).ready(function () {
     $('#search-form').submit(function (e) {
         e.preventDefault();
         let city = $("#search-input").val().trim();
+
+       
         openWeatherHandler(city);
         $("#search-input").val('');
-       
+
     });
 
-    $("#history").on('click',"button[id='history-button']", function (e) {
-        
+    $("#history").on('click', "button[id='history-button']", function (e) {
+
         e.preventDefault();
-        console.log(e)
+        // console.log(e)
         let historyCity = ($(this).text().trim())
-        console.log(historyCity)
+        // console.log(historyCity)
         openWeatherHandler(historyCity);
 
     })
