@@ -166,7 +166,7 @@ $(document).ready(function () {
      
         let divElement = $("<div>")
         divElement.addClass("card text-white bg-dark pb-3")
-        divElement.css('max-width', 'auto');
+        divElement.css('width', '12rem'); // style="width: 18rem;"
 
         forecastElement.append(divElement)
 
@@ -182,7 +182,7 @@ $(document).ready(function () {
         }).appendTo(divElement);
 
         $("<p/>", {
-            class: "card text ",
+            class: "card-text ",
             style: 'font-size: 1.2rem;',
             html: `<img src="https://openweathermap.org/img/w/${obj.icon}.png">`
         }).appendTo(bodyElementCard);
