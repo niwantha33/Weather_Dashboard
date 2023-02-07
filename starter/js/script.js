@@ -82,9 +82,11 @@ $(document).ready(function () {
     function todayWeatherDataToCard(obj, todayElement) {
         console.log("today:",obj, todayElement)
 
-        let card = $("<div style='max-width: 10rem; max-height: auto;'/>", {
-            class: "card mb-3 w-100"
+        let card = $("<div style='border:2px solid black;'/>", {
+           
         });
+
+        card.addClass('card mb-3 w-100');
 
         let card_body = $('<div/>', {
             class: "card-body",
@@ -96,12 +98,13 @@ $(document).ready(function () {
         }).appendTo(card_body);
 
         arr = [`Temp: ${obj.temp} ℃`, `Wind: ${obj.wind} KPH`, `Humidity: ${obj.wind} %`]
-        console.log(arr)
+       
         arr.forEach(element => {
             console.log(element)
             $("<p/>", {
                 class: "card text",
-                text: element
+                text: element,
+                style:'border:none;'
 
             }).appendTo(card_body);
         });
@@ -207,7 +210,8 @@ $(document).ready(function () {
             //0K − 273.15  kelvin to Cent & fixed to 2 decimals 
             temp:((Number(params.main.temp) - 273.15)).toFixed(2),
             humidity:params.main.humidity,
-            wind:params.wind.speed
+            wind:params.wind.speed,
+            date: luxon.DateTime.now().toFormat('dd-MMMM-yyyy')
             
         }
 
