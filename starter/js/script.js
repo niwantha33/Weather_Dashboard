@@ -166,6 +166,7 @@ $(document).ready(function () {
      
         let divElement = $("<div>")
         divElement.addClass("card text-white bg-dark pb-3")
+        
         divElement.css('width', '12rem'); // style="width: 18rem;"
 
         forecastElement.append(divElement)
